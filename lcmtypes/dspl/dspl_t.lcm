@@ -1,0 +1,13 @@
+package dspl;
+
+struct dspl_t
+{
+	int64_t utime;
+	int32_t lightNumber;
+	double temperature;
+	double humidity;
+	int32_t channelMode;
+	int32_t lightLevel;
+	double secsSinceComs;
+	double nackCount;
+}
