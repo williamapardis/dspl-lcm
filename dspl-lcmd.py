@@ -14,6 +14,9 @@ def my_handler(channel, data):
     print("   channelMode        = '%s'" % msg.channelMode)
     print("   lightLevel     = %s" % str(msg.lightLevel))
     print("")
+    print("!002:LOUT=%s" % str(msg.lightLevel))
+    print("!002:CHSW=%s" % str(msg.channelMode))
+    print("")
 
 lc = lcm.LCM()
 lc.subscribe("EXAMPLE", my_handler)
