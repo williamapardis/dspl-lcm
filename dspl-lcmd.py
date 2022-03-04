@@ -2,7 +2,7 @@
 
 import select
 import lcm
-from lcmtypes.dspl.dspl import dspl_t
+from lcmtypes.dspl import dspl_t
 
 def my_handler(channel, data):
     msg = dspl_t.decode(data)

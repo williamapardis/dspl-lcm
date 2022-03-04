@@ -2,7 +2,7 @@ import lcm
 import time
 import numpy as np
 
-from lcmtypes.dspl.dspl import dspl_t
+from lcmtypes.dspl import dspl_t
 
 lc = lcm.LCM()
 
