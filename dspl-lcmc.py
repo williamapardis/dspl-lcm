@@ -19,6 +19,8 @@
 # lc.publish("EXAMPLE", msg.encode())
 
 # dependencies
+import argparse
+# PyQt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
@@ -26,13 +28,24 @@ from PyQt5.QtCore import *
 from lcmtypes.dspl import dspl_t
 
 
+parser = argparse.ArgumentParser(description='Controls the DSPL lights on mesobot.')
+parser.add_argument('light', type=str)
+args = parser.parse_args()
+light = args.light
+if(light=="upper"):
+    print("commanding the upper light addr:002, ttyA3")
+if(light=="lower"):
+    print("commanding the lower light addr:003, ttyA5")
+
+
 # application creation and layout 
 app = QApplication([])
-app.setApplicationName("DSPL Control")
+app.setApplicationName("DSPL "+light.upper()+" Control")
 window = QWidget()
 window.setGeometry(0,0,300,100)
 layout = QVBoxLayout()
 msg = dspl_t()
+
 
 # button creation
 whiteB = QPushButton('White')
