@@ -26,7 +26,7 @@ from PyQt5.QtCore import *
 from lcmtypes.dspl import dspl_t
 
 
-# application creation and layout
+# application creation and layout 
 app = QApplication([])
 app.setApplicationName("DSPL Control")
 window = QWidget()
