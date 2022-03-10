@@ -28,6 +28,7 @@ from PyQt5.QtCore import *
 from lcmtypes.dspl import dspl_t
 
 
+# input arguments
 parser = argparse.ArgumentParser(description='Controls the DSPL lights on mesobot.')
 parser.add_argument('light', type=str)
 args = parser.parse_args()
