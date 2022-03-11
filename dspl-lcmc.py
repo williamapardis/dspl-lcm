@@ -33,10 +33,12 @@ light = args.light
 if(light=="upper"):
     print("commanding the upper light addr:002, ttyA3")
     msg.lightNumber = 2
-if(light=="lower"):
+elif(light=="lower"):
     print("commanding the lower light addr:003, ttyA5")
     msg.lightNumber = 3
-
+else:
+    print("error, please input lower or upper")
+    exit()
 
 # application creation and layout 
 app = QApplication([])
