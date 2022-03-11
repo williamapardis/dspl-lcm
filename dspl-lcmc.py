@@ -17,7 +17,8 @@ from lcmtypes.dspl import dspl_t
 lc = lcm.LCM()
 # lcm class
 msg = dspl_t()
-# static values of lcm
+
+# default values of lcm and dspl lights
 msg.temperature = float(np.random.uniform(4.1,33.5))
 msg.humidity = float(np.random.uniform(10.5,95.2))
 msg.lightLevel = int(np.random.uniform(0,100))
@@ -30,21 +31,37 @@ parser = argparse.ArgumentParser(description='Controls the DSPL lights on mesobo
 parser.add_argument('light', type=str)
 args = parser.parse_args()
 light = args.light
-if(light=="upper"):
-    print("commanding the upper light addr:002, ttyA3")
-    msg.lightNumber = 2
-elif(light=="lower"):
-    print("commanding the lower light addr:003, ttyA5")
-    msg.lightNumber = 3
-else:
-    print("error, please input lower or upper")
-    exit()
+
+# message publishing logic
+def pubMsg():
+    if(light=="upper"):
+        print("commanding the upper light...")
+        lc.publish(light, msg.encode())
+    elif(light=="lower"):
+        lc.publish(light, msg.encode())
+        print("commanding the lower light...")
+    elif(light=="both"):
+        lc.publish("upper", msg.encode())
+        lc.publish("lower", msg.encode())
+        print("commanding both lights...")
+    else:
+        print("error, please input lower, upper or both")
+        exit()
+
+# init default values
+pubMsg()
 
 # application creation and layout 
 app = QApplication([])
-app.setApplicationName("DSPL "+light+" Control")
+app.setApplicationName(light+" DSPL Control")
 window = QWidget()
 window.setGeometry(0,0,300,100)
+# center UI
+rect = window.frameGeometry()
+centerPoint = QDesktopWidget().availableGeometry().center()
+rect.moveCenter(centerPoint)
+window.move(rect.topLeft())
+# generic layout
 layout = QVBoxLayout()
 
 
@@ -58,8 +75,8 @@ layout.addWidget(redB,1)
 def clicked(value):
     msg.channelMode = value
     msg.utime = int(time.time() * 1000000)
-    lc.publish(light, msg.encode())
-    print(msg)
+    pubMsg()
+    print('channel mode set to %s' % value)
 # connect callbacks to buttons
 whiteB.clicked.connect(lambda: clicked(1))
 redB.clicked.connect(lambda: clicked(0))
@@ -75,8 +92,8 @@ spin.setAlignment(Qt.AlignCenter)
 def valuechange(self):
     msg.lightLevel = spin.value()
     msg.utime = int(time.time() * 1000000)
-    lc.publish(light, msg.encode())
-    print(msg.lightLevel)
+    pubMsg()
+    print('light level set to %s' % msg.lightLevel)
 # connect callback function to spinner    
 spin.valueChanged.connect(valuechange)
 

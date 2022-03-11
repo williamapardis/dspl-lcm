@@ -18,9 +18,11 @@ args = parser.parse_args()
 light = args.light
 # input conditioning
 if(light=="upper"):
-    print("listening for upper light")
+    waiter="listening for upper light..."
+    lightNumber=2
 elif(light=="lower"):
-    print("listening for lower light")
+    waiter="listening for lower light..."
+    lightNumber=3
 else:
     print("error, please input lower or upper")
     exit()
@@ -31,16 +33,18 @@ def my_handler(channel, data):
     msg = dspl_t.decode(data)
     print("Received message on channel \"%s\"" % channel)
     print("   utime   = %s" % str(msg.utime))
-    print("   lightNum    = %s" % str(msg.lightNumber))
+    print("   upFlag   = %s" % str(msg.upFlag))
+    print("   loFlag   = %s" % str(msg.loFlag))
+
     print("   temp = %s" % str(msg.temperature))
     print("   humidity: %s" % str(msg.humidity))
     print("   channelMode        = '%s'" % msg.channelMode)
     print("   lightLevel     = %s" % str(msg.lightLevel))
     
-    cmd = "!00%s:LOUT=%s" %(str(msg.lightNumber),str(msg.lightLevel))
+    cmd = "!00%s:LOUT=%s" %(str(lightNumber),str(msg.lightLevel))
     print("")
     print(cmd)
-    print("!00%s:CHSW=%s" % (str(msg.lightNumber),str(msg.channelMode)))
+    print("!00%s:CHSW=%s" % (str(lightNumber),str(msg.channelMode)))
     print("")
     
     # sending cmd to serial bridge via raw_bytes_t.lcm
@@ -65,6 +69,6 @@ try:
         if rfds:
             lc.handle()
         else:
-            print("Waiting for message...")
+            print(waiter)
 except KeyboardInterrupt:
     pass
