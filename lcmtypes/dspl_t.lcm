@@ -3,8 +3,6 @@ package dspl;
 struct dspl_t
 {
 	int64_t utime;
-	boolean upFlag;
-	boolean loFlag;
 	double temperature;
 	double humidity;
 	int32_t channelMode;

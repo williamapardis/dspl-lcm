@@ -10,16 +10,14 @@ except ImportError:
 import struct
 
 class dspl_t(object):
-    __slots__ = ["utime", "upFlag", "loFlag", "temperature", "humidity", "channelMode", "lightLevel", "secsSinceComs", "nackCount"]
+    __slots__ = ["utime", "temperature", "humidity", "channelMode", "lightLevel", "secsSinceComs", "nackCount"]
 
-    __typenames__ = ["int64_t", "boolean", "boolean", "double", "double", "int32_t", "int32_t", "double", "double"]
+    __typenames__ = ["int64_t", "double", "double", "int32_t", "int32_t", "double", "double"]
 
-    __dimensions__ = [None, None, None, None, None, None, None, None, None]
+    __dimensions__ = [None, None, None, None, None, None, None]
 
     def __init__(self):
         self.utime = 0
-        self.upFlag = False
-        self.loFlag = False
         self.temperature = 0.0
         self.humidity = 0.0
         self.channelMode = 0
@@ -34,7 +32,7 @@ class dspl_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">qbbddiidd", self.utime, self.upFlag, self.loFlag, self.temperature, self.humidity, self.channelMode, self.lightLevel, self.secsSinceComs, self.nackCount))
+        buf.write(struct.pack(">qddiidd", self.utime, self.temperature, self.humidity, self.channelMode, self.lightLevel, self.secsSinceComs, self.nackCount))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -48,16 +46,13 @@ class dspl_t(object):
 
     def _decode_one(buf):
         self = dspl_t()
-        self.utime = struct.unpack(">q", buf.read(8))[0]
-        self.upFlag = bool(struct.unpack('b', buf.read(1))[0])
-        self.loFlag = bool(struct.unpack('b', buf.read(1))[0])
-        self.temperature, self.humidity, self.channelMode, self.lightLevel, self.secsSinceComs, self.nackCount = struct.unpack(">ddiidd", buf.read(40))
+        self.utime, self.temperature, self.humidity, self.channelMode, self.lightLevel, self.secsSinceComs, self.nackCount = struct.unpack(">qddiidd", buf.read(48))
         return self
     _decode_one = staticmethod(_decode_one)
 
     def _get_hash_recursive(parents):
         if dspl_t in parents: return 0
-        tmphash = (0xc6958ad536c6a942) & 0xffffffffffffffff
+        tmphash = (0x36cf1795a1cbe338) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

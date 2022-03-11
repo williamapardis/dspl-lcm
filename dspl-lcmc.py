@@ -19,11 +19,12 @@ lc = lcm.LCM()
 msg = dspl_t()
 
 # default values of lcm and dspl lights
-msg.temperature = float(np.random.uniform(4.1,33.5))
-msg.humidity = float(np.random.uniform(10.5,95.2))
-msg.lightLevel = int(np.random.uniform(0,100))
-msg.secsSinceComs = float(10)
-msg.nackCount = float(2)
+msg.channelMode = 1
+# msg.temperature = float(np.random.uniform(4.1,33.5))
+# msg.humidity = float(np.random.uniform(10.5,95.2))
+msg.lightLevel = 25
+# msg.secsSinceComs = float(10)
+# msg.nackCount = float(2)
 
 
 # input arguments
@@ -77,15 +78,22 @@ def clicked(value):
     msg.utime = int(time.time() * 1000000)
     pubMsg()
     print('channel mode set to %s' % value)
+    # button color logic
+    if(value):
+        print('white')
+    else:
+        print('red')
 # connect callbacks to buttons
 whiteB.clicked.connect(lambda: clicked(1))
 redB.clicked.connect(lambda: clicked(0))
+whiteB.setStyleSheet("background-color: white")
+redB.setStyleSheet("background-color: red")
 
 
 # Intensity input
 spin = QSpinBox()
 layout.addWidget(spin,1)
-spin.setValue(0)
+spin.setValue(msg.lightLevel)
 spin.setRange(0,100)
 spin.setAlignment(Qt.AlignCenter)
 # spinner callback function
