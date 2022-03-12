@@ -7,7 +7,7 @@ import argparse
 # PyQt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import * 
-from PyQt5.QtCore import * 
+from PyQt5.QtCore import *
 # lcmtypes
 import lcm
 from lcmtypes.dspl import dspl_t
@@ -52,6 +52,7 @@ def pubMsg():
 # init default values
 pubMsg()
 
+
 # application creation and layout 
 app = QApplication([])
 app.setApplicationName(light+" DSPL Control")
@@ -66,28 +67,40 @@ window.move(rect.topLeft())
 layout = QVBoxLayout()
 
 
-
-# button creation
-whiteB = QPushButton('White')
-redB   = QPushButton('Red')
-layout.addWidget(whiteB,1)
-layout.addWidget(redB,1)
-# button callback function
-def clicked(value):
-    msg.channelMode = value
+# channel color select toggle button
+toggle = QComboBox()
+toggle.addItems(['White','Red'])
+# callback for toggle currentIndex conviently matched with just the addition of 1
+def toggleChg():
+    msg.channelMode = toggle.currentIndex()+1
     msg.utime = int(time.time() * 1000000)
     pubMsg()
-    print('channel mode set to %s' % value)
-    # button color logic
-    if(value):
-        print('white')
-    else:
-        print('red')
-# connect callbacks to buttons
-whiteB.clicked.connect(lambda: clicked(1))
-redB.clicked.connect(lambda: clicked(0))
-whiteB.setStyleSheet("background-color: white")
-redB.setStyleSheet("background-color: red")
+    print(toggle.currentText())
+toggle.currentIndexChanged.connect(toggleChg)
+layout.addWidget(toggle,1)
+
+
+# button creation
+# whiteB = QPushButton('White')
+# redB   = QPushButton('Red')
+# layout.addWidget(whiteB,1)
+# layout.addWidget(redB,1)
+# # button callback function
+# def clicked(value):
+#     msg.channelMode = value
+#     msg.utime = int(time.time() * 1000000)
+#     pubMsg()
+#     print('channel mode set to %s' % value)
+#     # button color logic
+#     if(value):
+#         print('white')
+#     else:
+#         print('red')
+# # connect callbacks to buttons
+# whiteB.clicked.connect(lambda: clicked(1))
+# redB.clicked.connect(lambda: clicked(0))
+# whiteB.setStyleSheet("background-color: white")
+# redB.setStyleSheet("background-color: red")
 
 
 # Intensity input
@@ -104,6 +117,8 @@ def valuechange(self):
     print('light level set to %s' % msg.lightLevel)
 # connect callback function to spinner    
 spin.valueChanged.connect(valuechange)
+
+
 
 window.setLayout(layout)
 window.show()
