@@ -20,7 +20,7 @@ light = args.light
 if(light=="upper"):
     waiter="listening for upper light..."
     lightNumber=2
-    tty = 'ttyA2'
+    tty = 'ttyA6'
 elif(light=="lower"):
     waiter="listening for lower light..."
     lightNumber=3
@@ -45,7 +45,7 @@ def my_handler(channel, data):
     print("   lightLevel     = %s" % str(msg.lightLevel))
     print("")
     # printing serial commands      
-    print("Serial commands to %s" % tty)
+    print("Serial commands to %s" % tty+'i')
     cmd = "!00%s:LOUT=%s\n" %(str(lightNumber),str(msg.lightLevel))
     print("   "+cmd)
     cmd = "!00%s:CHSW=%s\n" % (str(lightNumber),str(msg.channelMode))
@@ -60,7 +60,7 @@ def my_handler(channel, data):
     msg_o.length = len(out)
     msg_o.data = out
 
-    lc.publish("ttyUSB0i",msg_o.encode())
+    lc.publish(tty+'i',msg_o.encode())
 
 
 # subscribe to message
