@@ -48,7 +48,7 @@ def my_handler(channel, data):
     print("Serial commands to %s" % tty+'i')
     cmd = "!00%s:LOUT=%s\n" %(str(lightNumber),str(msg.lightLevel))
     print("   "+cmd)
-    cmd = "!00%s:CHSW=%s\n" % (str(lightNumber),str(msg.channelMode))
+    cmd = "!00%s:CHSW=%s\r\r\n\n" % (str(lightNumber),str(msg.channelMode))
     print("   "+cmd)
     print("")
     
