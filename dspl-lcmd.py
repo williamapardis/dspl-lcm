@@ -29,6 +29,18 @@ else:
     print("error, please input lower or upper")
     exit()
     
+# sending cmd to serial bridge via raw_bytes_t.lcm
+def my_sender(cmd):
+
+    out = bytes(cmd, 'utf-8')
+
+    msg_o = bytes_t() 
+    msg_o.utime = int(time.time()*1000000)
+    msg_o.length = len(out)
+    msg_o.data = out
+
+    lc.publish(tty+'i',msg_o.encode())
+
 
 # callback function for when lcm msg recieved
 def my_handler(channel, data):
@@ -46,22 +58,15 @@ def my_handler(channel, data):
     print("")
     # printing serial commands      
     print("Serial commands to %s" % tty+'i')
-    cmd = "!00%s:LOUT=%s\n" %(str(lightNumber),str(msg.lightLevel))
+    cmd = "!00%s:LOUT=%s\r\r\n\n" %(str(lightNumber),str(msg.lightLevel))
     print("   "+cmd)
+    my_sender(cmd)
+    time.sleep(0.5)
     cmd = "!00%s:CHSW=%s\r\r\n\n" % (str(lightNumber),str(msg.channelMode))
     print("   "+cmd)
+    my_sender(cmd)
     print("")
     
-    # sending cmd to serial bridge via raw_bytes_t.lcm
-    out = bytes(cmd, 'utf-8')
-
-    msg_o = bytes_t() 
-    msg_o.utime = int(time.time()*1000000)
-    msg_o.length = len(out)
-    msg_o.data = out
-
-    lc.publish(tty+'i',msg_o.encode())
-
 
 # subscribe to message
 lc.subscribe(light, my_handler)
