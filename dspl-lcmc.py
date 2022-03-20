@@ -35,35 +35,40 @@ def lightState(state):
     if(light=="both"):
         sshCmd = "\"bot upper_light "+state+";bot lower_light "+state+"\""
         print(sshCmd)
-    else:
+    elif(light=="upper" or light=="lower"):
         sshCmd = "\"bot "+light+"_light "+state+"\""
         print(sshCmd)
+    else:
+        print("error, please input lower, upper or both")
+        exit()
     os.system("ssh mb3 "+sshCmd)
 
 
 ## CONTROL MESSAGING SETUP ##
 def pubMsg():
-    if(light=="upper"):
-        print("commanding the upper light...")
-        lc.publish(light, msg.encode())
-    elif(light=="lower"):
-        print("commanding the lower light...")
-        lc.publish(light, msg.encode())
-    elif(light=="both"):
+    #if(light=="upper"):
+    #    print("commanding the upper light...")
+    #    lc.publish(light, msg.encode())
+    #elif(light=="lower"):
+    #    print("commanding the lower light...")
+    #    lc.publish(light, msg.encode())
+    if(light=="both"):
         lc.publish("upper", msg.encode())
         lc.publish("lower", msg.encode())
         print("commanding both lights...")
+    elif(light=="upper" or light=="lower"):
+        lc.publish(light, msg.encode())
     else:
         print("error, please input lower, upper or both")
         exit()
 
 
+## LIGHT INIT STATE OFF ##
+lightState("on")
+
+
 ## INIT DEFAULT LIGHT STATES ##
 pubMsg()
-
-## LIGHT INIT STATE OFF ##
-lightState("off")
-
 
 
 ##  APPLICATION CREATION ##
@@ -84,7 +89,7 @@ layout = QVBoxLayout()
 ## WIGETS ##
 # on/off select combo box 
 togON = QComboBox()
-togON.addItems(['off','on'])
+togON.addItems(['on','off'])
 # callback for toggle currentIndex conviently matched with just the addition of 1
 def stateChg():
     lightState(togON.currentText())
@@ -95,7 +100,7 @@ layout.addWidget(togON,1)
 
 # channel color select combo box
 toggle = QComboBox()
-toggle.addItems(['White','Red'])
+toggle.addItems(['white','red'])
 # callback for toggle currentIndex conviently matched with just the addition of 1
 def toggleChg():
     msg.channelMode = toggle.currentIndex()+1
@@ -112,13 +117,14 @@ spin.setValue(msg.lightLevel)
 spin.setRange(0,100)
 spin.setAlignment(Qt.AlignCenter)
 # spinner callback function
-def valuechange(self):
+def valuechange():
+    time.sleep(0.5)
     msg.lightLevel = spin.value()
     msg.utime = int(time.time() * 1000000)
     pubMsg()
     print('light level set to %s' % msg.lightLevel)
 # connect callback function to spinner    
-spin.valueChanged.connect(valuechange)
+spin.editingFinished.connect(valuechange)
 
 
 
