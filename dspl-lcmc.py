@@ -1,9 +1,9 @@
-
-
-# dependencies
+## DEPENDANTS ##
+# general
 import time
 import numpy as np
 import argparse
+import os
 # PyQt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import * 
@@ -13,34 +13,42 @@ import lcm
 from lcmtypes.dspl import dspl_t
 
 
+## LCM SETUP ##
 # lcm handler
 lc = lcm.LCM()
 # lcm class
 msg = dspl_t()
-
 # default values of lcm and dspl lights
 msg.channelMode = 1
-# msg.temperature = float(np.random.uniform(4.1,33.5))
-# msg.humidity = float(np.random.uniform(10.5,95.2))
 msg.lightLevel = 25
-# msg.secsSinceComs = float(10)
-# msg.nackCount = float(2)
 
 
-# input arguments
+## INPUT ARGUMENTS ##
 parser = argparse.ArgumentParser(description='Controls the DSPL lights on mesobot.')
 parser.add_argument('light', type=str)
 args = parser.parse_args()
 light = args.light
 
-# message publishing logic
+
+## SET LIGHT STATE VIA SSH MB3 BOT ##
+def lightState(state):
+    if(light=="both"):
+        sshCmd = "\"bot upper_light "+state+";bot lower_light "+state+"\""
+        print(sshCmd)
+    else:
+        sshCmd = "\"bot "+light+"_light "+state+"\""
+        print(sshCmd)
+    os.system("ssh mb3 "+sshCmd)
+
+
+## CONTROL MESSAGING SETUP ##
 def pubMsg():
     if(light=="upper"):
         print("commanding the upper light...")
         lc.publish(light, msg.encode())
     elif(light=="lower"):
-        lc.publish(light, msg.encode())
         print("commanding the lower light...")
+        lc.publish(light, msg.encode())
     elif(light=="both"):
         lc.publish("upper", msg.encode())
         lc.publish("lower", msg.encode())
@@ -49,8 +57,13 @@ def pubMsg():
         print("error, please input lower, upper or both")
         exit()
 
-# init default values
+
+## INIT DEFAULT LIGHT STATES ##
 pubMsg()
+
+## LIGHT INIT STATE OFF ##
+lightState("off")
+
 
 
 ##  APPLICATION CREATION ##
@@ -71,12 +84,13 @@ layout = QVBoxLayout()
 ## WIGETS ##
 # on/off select combo box 
 togON = QComboBox()
-togON.addItems(['OFF','ON'])
+togON.addItems(['off','on'])
 # callback for toggle currentIndex conviently matched with just the addition of 1
-def toggleChg():
+def stateChg():
+    lightState(togON.currentText())
     print(togON.currentIndex())
     print(togON.currentText())
-togON.currentIndexChanged.connect(toggleChg)
+togON.currentIndexChanged.connect(stateChg)
 layout.addWidget(togON,1)
 
 # channel color select combo box
