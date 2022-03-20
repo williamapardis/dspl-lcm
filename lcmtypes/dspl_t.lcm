@@ -3,10 +3,6 @@ package dspl;
 struct dspl_t
 {
 	int64_t utime;
-	double temperature;
-	double humidity;
 	int32_t channelMode;
 	int32_t lightLevel;
-	double secsSinceComs;
-	double nackCount;
 }
