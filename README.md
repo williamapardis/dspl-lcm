@@ -27,3 +27,4 @@ git clone git@github.com:whoidsl-mesobot/serial-lcm-bridge.git
 Make sure mb3/serial-lcm-bridge/lcmtypes/raw_bytes_t.lcm matches lcmtypes/raw_bytes_t.lcm
 
 Must run daemon with TTL>0
+LCM_DEFAULT_URL=udpm://239.255.76.67:7667?ttl=7 python3 dspl-lcmd.py upper
