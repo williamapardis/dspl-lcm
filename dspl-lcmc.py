@@ -46,12 +46,6 @@ def lightState(state):
 
 ## CONTROL MESSAGING SETUP ##
 def pubMsg():
-    #if(light=="upper"):
-    #    print("commanding the upper light...")
-    #    lc.publish(light, msg.encode())
-    #elif(light=="lower"):
-    #    print("commanding the lower light...")
-    #    lc.publish(light, msg.encode())
     if(light=="both"):
         lc.publish("upper", msg.encode())
         lc.publish("lower", msg.encode())
@@ -116,18 +110,23 @@ layout.addWidget(spin,1)
 spin.setValue(msg.lightLevel)
 spin.setRange(0,100)
 spin.setAlignment(Qt.AlignCenter)
-# spinner callback function
-def valuechange():
+spin.setStyleSheet("QSpinBox {border : 2px solid green;}")
+# spinner callback functions
+def valueChg():
+    spin.setStyleSheet("QSpinBox {border : 8px solid red;}")
+def sendMsg():
     time.sleep(0.5)
     msg.lightLevel = spin.value()
     msg.utime = int(time.time() * 1000000)
     pubMsg()
     print('light level set to %s' % msg.lightLevel)
+    spin.setStyleSheet("QSpinBox {border : 2px solid green;}")
 # connect callback function to spinner    
-spin.editingFinished.connect(valuechange)
+spin.editingFinished.connect(sendMsg)
+spin.valueChanged.connect(valueChg)
 
 
-
+## START APPLICATION ##
 window.setLayout(layout)
 window.show()
 app.exec()
