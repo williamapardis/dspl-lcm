@@ -51,8 +51,6 @@ def my_handler(channel, data):
     print("")
     print("Received message on channel \"%s\"" % channel)
     print("   utime   = %s" % str(msg.utime))
-    print("   temp = %s" % str(msg.temperature))
-    print("   humidity: %s" % str(msg.humidity))
     print("   channelMode        = '%s'" % msg.channelMode)
     print("   lightLevel     = %s" % str(msg.lightLevel))
     print("")
