@@ -53,7 +53,8 @@ def pubMsg():
 pubMsg()
 
 
-# application creation and layout 
+##  APPLICATION CREATION ##
+# layout 
 app = QApplication([])
 app.setApplicationName(light+" DSPL Control")
 window = QWidget()
@@ -67,7 +68,18 @@ window.move(rect.topLeft())
 layout = QVBoxLayout()
 
 
-# channel color select toggle button
+## WIGETS ##
+# on/off select combo box 
+togON = QComboBox()
+togON.addItems(['OFF','ON'])
+# callback for toggle currentIndex conviently matched with just the addition of 1
+def toggleChg():
+    print(togON.currentIndex())
+    print(togON.currentText())
+togON.currentIndexChanged.connect(toggleChg)
+layout.addWidget(togON,1)
+
+# channel color select combo box
 toggle = QComboBox()
 toggle.addItems(['White','Red'])
 # callback for toggle currentIndex conviently matched with just the addition of 1
@@ -79,31 +91,7 @@ def toggleChg():
 toggle.currentIndexChanged.connect(toggleChg)
 layout.addWidget(toggle,1)
 
-
-# button creation
-# whiteB = QPushButton('White')
-# redB   = QPushButton('Red')
-# layout.addWidget(whiteB,1)
-# layout.addWidget(redB,1)
-# # button callback function
-# def clicked(value):
-#     msg.channelMode = value
-#     msg.utime = int(time.time() * 1000000)
-#     pubMsg()
-#     print('channel mode set to %s' % value)
-#     # button color logic
-#     if(value):
-#         print('white')
-#     else:
-#         print('red')
-# # connect callbacks to buttons
-# whiteB.clicked.connect(lambda: clicked(1))
-# redB.clicked.connect(lambda: clicked(0))
-# whiteB.setStyleSheet("background-color: white")
-# redB.setStyleSheet("background-color: red")
-
-
-# Intensity input
+# Intensity input spinner
 spin = QSpinBox()
 layout.addWidget(spin,1)
 spin.setValue(msg.lightLevel)
