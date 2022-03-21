@@ -9,9 +9,6 @@ Client and daemon LCM control of Deep Sea Power and Light [LSL-2025](https://www
 ```
 pip install PyQt5
 ```
-```
-pip install paramiko
-```
 ###### Clone Repo
 ```
 git clone git@github.com:williamapardis/mesobot.git
