@@ -1,0 +1,15 @@
+[Unit]
+Description=LCM daemon for radiometer
+After=multicast-static.service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5s
+User=mesobot
+Group=mesobot
+Environment="LCM_DEFAULT_URL=udpm://239.255.76.67:7667?ttl=1"
+ExecStart=/usr/bin/env python3
+
+[Install]
+WantedBy=default.target
