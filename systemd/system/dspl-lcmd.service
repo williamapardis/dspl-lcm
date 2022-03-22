@@ -6,10 +6,10 @@ After=multicast-static.service
 Type=simple
 Restart=on-failure
 RestartSec=5s
-User=mesobot
-Group=mesobot
+User=wap
+Group=wap
 Environment="LCM_DEFAULT_URL=udpm://239.255.76.67:7667?ttl=1"
-ExecStart=/usr/bin/env python3
-
+ExecStart=/usr/bin/env python3 /home/wap/meso/dspl-lcm/dspl-lcmd.py upper
+	
 [Install]
 WantedBy=default.target
