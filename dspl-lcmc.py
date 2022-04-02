@@ -11,12 +11,13 @@ from PyQt5.QtCore import *
 # lcmtypes
 import lcm
 from lcmtypes.dspl import dspl_t
-
+from lcmtypes.power import switch_t
 
 ## LCM SETUP ##
 # lcm handler
 lc = lcm.LCM()
 # lcm class
+swt = switch_t()
 msg = dspl_t()
 # default values of lcm and dspl lights
 msg.channelMode = 1
@@ -28,20 +29,6 @@ parser = argparse.ArgumentParser(description='Controls the DSPL lights on mesobo
 parser.add_argument('light', type=str)
 args = parser.parse_args()
 light = args.light
-
-
-## SET LIGHT STATE VIA SSH MB3 BOT ##
-def lightState(state):
-    if(light=="both"):
-        sshCmd = "\"bot upper_light "+state+";bot lower_light "+state+"\""
-        print(sshCmd)
-    elif(light=="upper" or light=="lower"):
-        sshCmd = "\"bot "+light+"_light "+state+"\""
-        print(sshCmd)
-    else:
-        print("error, please input lower, upper or both")
-        exit()
-    os.system("ssh mb3 "+sshCmd)
 
 
 ## CONTROL MESSAGING SETUP ##
@@ -57,8 +44,8 @@ def pubMsg():
         exit()
 
 
-## LIGHT INIT STATE OFF ##
-lightState("on")
+## LIGHT INIT STATE ON ##
+lightState()
 
 
 ## INIT DEFAULT LIGHT STATES ##
@@ -66,7 +53,7 @@ pubMsg()
 
 
 ##  APPLICATION CREATION ##
-# layout 
+# layout
 app = QApplication([])
 app.setApplicationName(light+" DSPL Control")
 window = QWidget()
