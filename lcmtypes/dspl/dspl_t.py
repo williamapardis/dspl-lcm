@@ -10,14 +10,17 @@ except ImportError:
 import struct
 
 class dspl_t(object):
-    __slots__ = ["utime", "channelMode", "lightLevel"]
+    __slots__ = ["utime", "port", "address", "enabled", "channelMode", "lightLevel"]
 
-    __typenames__ = ["int64_t", "int32_t", "int32_t"]
+    __typenames__ = ["int64_t", "string", "string", "boolean", "int32_t", "int32_t"]
 
-    __dimensions__ = [None, None, None]
+    __dimensions__ = [None, None, None, None, None, None]
 
     def __init__(self):
         self.utime = 0
+        self.port = ""
+        self.address = ""
+        self.enabled = False
         self.channelMode = 0
         self.lightLevel = 0
 
@@ -28,7 +31,16 @@ class dspl_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">qii", self.utime, self.channelMode, self.lightLevel))
+        buf.write(struct.pack(">q", self.utime))
+        __port_encoded = self.port.encode('utf-8')
+        buf.write(struct.pack('>I', len(__port_encoded)+1))
+        buf.write(__port_encoded)
+        buf.write(b"\0")
+        __address_encoded = self.address.encode('utf-8')
+        buf.write(struct.pack('>I', len(__address_encoded)+1))
+        buf.write(__address_encoded)
+        buf.write(b"\0")
+        buf.write(struct.pack(">bii", self.enabled, self.channelMode, self.lightLevel))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -42,13 +54,19 @@ class dspl_t(object):
 
     def _decode_one(buf):
         self = dspl_t()
-        self.utime, self.channelMode, self.lightLevel = struct.unpack(">qii", buf.read(16))
+        self.utime = struct.unpack(">q", buf.read(8))[0]
+        __port_len = struct.unpack('>I', buf.read(4))[0]
+        self.port = buf.read(__port_len)[:-1].decode('utf-8', 'replace')
+        __address_len = struct.unpack('>I', buf.read(4))[0]
+        self.address = buf.read(__address_len)[:-1].decode('utf-8', 'replace')
+        self.enabled = bool(struct.unpack('b', buf.read(1))[0])
+        self.channelMode, self.lightLevel = struct.unpack(">ii", buf.read(8))
         return self
     _decode_one = staticmethod(_decode_one)
 
     def _get_hash_recursive(parents):
         if dspl_t in parents: return 0
-        tmphash = (0xddaff7961897cdf6) & 0xffffffffffffffff
+        tmphash = (0xa4a60fcafbdf8991) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)
