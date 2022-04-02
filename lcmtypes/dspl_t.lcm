@@ -1,7 +1,6 @@
 package dspl;
 
-struct dspl_t
-{
+struct dspl_t {
 	int64_t utime;
 	string port;
 	string address;
