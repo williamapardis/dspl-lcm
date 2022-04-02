@@ -1,0 +1,11 @@
+package power;
+
+struct switch_t {
+  int64_t utime; // microseconds since 1970-01-01T00:00:00
+  int8_t channel;
+  int8_t state; // -1:isolated, 0:off, 1:on
+  string label; // informational only
+}
+
+// TODO: revisit LCM enum
+
