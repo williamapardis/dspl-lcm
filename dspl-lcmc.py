@@ -34,7 +34,9 @@ light = args.light
 ## CONTROL MESSAGING SETUP ##
 def pubMsg():
     if(light=="both"):
+        msg.port = 'A6'
         lc.publish("upper", msg.encode())
+        msg.port = 'A3'
         lc.publish("lower", msg.encode())
         print("commanding both lights...")
     elif(light=="upper" or light=="lower"):
@@ -42,10 +44,6 @@ def pubMsg():
     else:
         print("error, please input lower, upper or both")
         exit()
-
-
-## LIGHT INIT STATE ON ##
-lightState()
 
 
 ## INIT DEFAULT LIGHT STATES ##
@@ -69,15 +67,20 @@ layout = QVBoxLayout()
 
 ## WIGETS ##
 # on/off select combo box 
-togON = QComboBox()
-togON.addItems(['on','off'])
+togOn = QComboBox()
+togOn.addItems(['on','off'])
 # callback for toggle currentIndex conviently matched with just the addition of 1
 def stateChg():
-    lightState(togON.currentText())
-    print(togON.currentIndex())
-    print(togON.currentText())
-togON.currentIndexChanged.connect(stateChg)
-layout.addWidget(togON,1)
+    if(togOn.currentText()=='on'):
+        msg.enabled = True
+    elif(togOn.currentText()=='off'):
+        msg.enabled = False
+    pubMsg()
+    #lightState(togON.currentText())
+    print(togOn.currentIndex())
+    print(togOn.currentText())
+togOn.currentIndexChanged.connect(stateChg)
+layout.addWidget(togOn,1)
 
 # channel color select combo box
 toggle = QComboBox()
