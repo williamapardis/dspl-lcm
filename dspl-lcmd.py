@@ -6,6 +6,7 @@ import lcm
 import select
 # lcmtypes
 from lcmtypes.dspl import dspl_t
+from lcmtypes.power import switch_t
 from lcmtypes.raw import bytes_t
 
 # lcm handler 
@@ -44,9 +45,24 @@ def my_sender(cmd):
 
 # callback function for when lcm msg recieved
 def my_handler(channel, data):
-    
+
     # decode message     
     msg = dspl_t.decode(data)
+    #power state
+    if(msg.enabled):
+        s = switch_t()
+        s.utime = int(time.time()*1000000)
+        s.channel = int(msg.port,16)-128
+        s.state = 1
+        lc.publish("LCBs",s.encode())
+        print("enabled");
+    elif(not(msg.enabled)):
+        s = switch_t()
+        s.utime = int(time.time()*1000000)
+        s.channel = int(msg.port,16)-128
+        s.state = 0
+        lc.publish("LCBs",s.encode())
+        print("disabled");
     # display lcm message     
     print("")
     print("Received message on channel \"%s\"" % channel)
